@@ -15,7 +15,9 @@ const getBook = (req, res) => {
   axios.get(url)
     .then(response => {
       const book = response.data.items
-
+      
+      // Define a string isbn como a chave do nosso cache. O conteúdo é o título.
+      // Expiração do cache para 1h (60min x 60s)
       client.setex(isbn, 3600, JSON.stringify(book))
       res.json(book)
     })
@@ -27,6 +29,7 @@ const getBook = (req, res) => {
 const getCache = (req, res) => {
   const isbn = req.query.isbn;
 
+  //Verifica os dados do cache primeiro
   client.get(isbn, (err, result) => {
     if(result) {
       res.json(result)
